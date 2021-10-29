@@ -1,0 +1,3 @@
+[submodule "static/scripts/Sortable"]
+	path = static/scripts/Sortable
+	url = git@github.com:SortableJS/Sortable.git

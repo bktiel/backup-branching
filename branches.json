@@ -1,0 +1,74 @@
+{
+  "IN": {
+    "name": "Infantry (IN)",
+    "detail": []
+  },
+  "AD": {
+    "name": "Air Defense Artillery (AD)",
+    "detail": []
+  },
+  "AR": {
+    "name": "Armor (AR)",
+    "detail": []
+  },
+  "AV": {
+    "name": "Aviation (AV)",
+    "detail": []
+  },
+  "EN": {
+    "name": "Corps of Engineers (EN)",
+    "detail": ["AR","EOD","FA","IN"]
+  },
+  "CY": {
+    "name": "Cyber Corps (CY)",
+    "detail": []
+  },
+  "FA": {
+    "name": "Field Artillery (FA)",
+    "detail": []
+  },
+  "CM": {
+    "name": "Chemical Corps (CM)",
+    "detail": ["EOD","FA","IN"]
+  },
+  "SC": {
+    "name": "Signal Corps (SC)",
+    "detail": ["AR","CM","FA","IN"]
+  },
+  "MI": {
+    "name": "Military Intelligence Corps (MI)",
+    "detail": ["AR","CM","FA","IN"]
+  },
+  "MP": {
+    "name": "Military Police Corps (MP)",
+    "detail": []
+  },
+  "AG": {
+    "name": "Adjutant General's Corps (AG)",
+    "detail": ["AR","CM","EOD","FA","IN"]
+  },
+  "FC": {
+    "name": "Finance Corps (FC)",
+    "detail": ["AR","IN"]
+  },
+  "OD": {
+    "name": "Ordnance Corps (OD)",
+    "detail": []
+  },
+  "EOD": {
+    "name": "Explosive Ordnance Disposal (EOD)",
+    "detail": []
+  },
+  "QM": {
+    "name": "Quartermaster Corps (QM)",
+    "detail": []
+  },
+  "TC": {
+    "name": "Transportation Corps (TC)",
+    "detail": []
+  },
+  "MS": {
+    "name": "Medical Service Corps (MS)",
+    "detail": []
+  }
+}
