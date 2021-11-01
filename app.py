@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 branches={}
 
-with open('branches.json') as reader:
+with open('/home/branching/branches.json') as reader:
     branches=json.load(reader)
 
 

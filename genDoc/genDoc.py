@@ -1,5 +1,6 @@
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
+import os
 
 from pyhanko.cli import pyhanko_exception_manager, parse_field_location_spec
 from reportlab.pdfgen import canvas
@@ -23,7 +24,7 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     Y_INTER = 15
     # values to print
 
-    TEMPLATE = "genDoc/original.pdf"
+    TEMPLATE = os.path.join(os.path.dirname(__file__),"original.pdf")
 
     # turn prefs into list
     PREFS=PREFS.split(',')
@@ -37,7 +38,7 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     OFFICE_SYMBOL = (74, 670)
 
     # set up font
-    pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
+    pdfmetrics.registerFont(TTFont('Arial', os.path.join(os.path.dirname(__file__),'arial.ttf')))
 
 
     def writeFooter(page, ystart):
