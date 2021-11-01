@@ -40,7 +40,8 @@
         newNode.querySelector('.col-5').classList.add("align-items-end");
         newNode.querySelector('.col-5').innerHTML=
             `<button type="button" class="btn btn-danger" onclick="removeBRADSO('${baseBranch}')">Remove</button>`;
-        branchList.insertBefore(newNode,targetBranch);
+
+        branchList.insertBefore(newNode,targetBranch.nextSibling);
 
         let bradsoCheck=document.querySelector(`#flexSwitch${baseBranch}`);
         bradsoCheck.onclick= function() { removeBRADSO(baseBranch) }
@@ -80,6 +81,23 @@
         listArray.forEach((item) => {
             prefs.push(item.querySelector("p").textContent)
         });
+
+        bradsoItems=[];
+        let error=false;
+        prefs.forEach((item) => {
+            if (item.includes("BRADSO")) {
+                bradsoItems.push(item.replace("BRADSO","").trim());
+            }
+            if(bradsoItems.includes(item)) {
+                alert(`You have a BRADSO for ${item} before the basic branch in your preferences. Please move BRADSO behind your basic branch - it should only be charged if you need it.`);
+                error=true;
+            }
+        })
+        if(error){
+            return;
+        }
+
+        //create js object for submission through post data
 
         var customData= {
             "first":first,

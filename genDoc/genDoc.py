@@ -23,8 +23,7 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     Y_INTER = 15
     # values to print
 
-    TEMPLATE = "original.pdf"
-    OUTFILE = "destination.pdf"
+    TEMPLATE = "genDoc/original.pdf"
 
     # turn prefs into list
     PREFS=PREFS.split(',')
