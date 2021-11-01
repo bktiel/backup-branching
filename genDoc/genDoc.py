@@ -7,7 +7,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 import subprocess
 from datetime import date
 
-def generateMFR(reg,company,first,last,email,prefs):
+def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     # where should editing text begin
     ROOT = (140, 490)
     PAGE2_Y_START = 699
@@ -15,15 +15,15 @@ def generateMFR(reg,company,first,last,email,prefs):
     # how far is a newline
     Y_INTER = 15
     # values to print
-    LENGTH = 20
-    FIRST = "John"
-    LAST = "Riemers"
-    EMAIL = "johnathan.riemerspeters@westpoint.edu"
-    COMPANY = "H"
-    REG = "2"
 
     TEMPLATE = "original.pdf"
     OUTFILE = "destination.pdf"
+
+    # turn prefs into list
+    PREFS=PREFS.split(',')
+    for index,item in enumerate(PREFS):
+        PREFS[index]=f"{index+1}. {item}"
+    LENGTH=len(PREFS)
 
     SIGNATURE_BLOCK_START = 0
 
@@ -82,13 +82,13 @@ def generateMFR(reg,company,first,last,email,prefs):
         if LENGTH < PAGE2_LIMIT:
             # write contents
             for i in range(LENGTH):
-                page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, "CYBER")
+                page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, PREFS[i])
         else:
             for i in range(PAGE2_LIMIT):
-                page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, "CYBER")
+                page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, PREFS[i])
             # write remainder on second page
             for i in range(PAGE2_LIMIT, LENGTH):
-                page2.drawString(ROOT[0], PAGE2_Y_START - (i - PAGE2_LIMIT) * Y_INTER, "CYBER")
+                page2.drawString(ROOT[0], PAGE2_Y_START - (i - PAGE2_LIMIT) * Y_INTER, PREFS[i])
 
         # write footer
         writeFooter(page2, (PAGE2_Y_START - ((LENGTH - PAGE2_LIMIT) * Y_INTER) - 5))
@@ -100,9 +100,9 @@ def generateMFR(reg,company,first,last,email,prefs):
     else:
         # write contents
         for i in range(LENGTH):
-            page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, "CYBER")
+            page1.drawString(ROOT[0], ROOT[1] - i * Y_INTER, PREFS[i])
         # write footer
-        writeFooter(page1, (ROOT[1] - (LENGTH * Y_INTER) - 5))
+        writeFooter(page1, (ROOT[1] - (LENGTH * Y_INTER) - 10))
         page1.save()
 
     # move to the beginning of the StringIO buffer

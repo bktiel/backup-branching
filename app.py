@@ -21,12 +21,18 @@ def base():
             companies.append(f"{comp}{reg}")
     return render_template('base.html',branches=branches,companies=companies)
 
-@app.route('/genDoc')
+@app.route('/genDoc', methods=['POST'])
 def generateDoc():
-    if request.method=='GET':
-        file=genDoc.generateMFR()
-        file=FileWrapper(file)
-        return Response(file, mimetype="doc.pdf", direct_passthrough=True)
+    file=genDoc.generateMFR(
+        request.values.get("company")[0],
+        request.values.get("company")[1],
+        request.values.get("first"),
+        request.values.get("last"),
+        request.values.get("email"),
+        request.values.get("prefs")
+    )
+    file=FileWrapper(file)
+    return Response(file, mimetype="doc.pdf", direct_passthrough=True)
 
 
 
