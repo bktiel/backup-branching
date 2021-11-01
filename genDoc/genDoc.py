@@ -1,11 +1,18 @@
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
+
+from pyhanko.cli import pyhanko_exception_manager, parse_field_location_spec
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import subprocess
 from datetime import date
+
+
+from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
+from pyhanko.sign import Signer, signers, fields
+
 
 def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     # where should editing text begin
@@ -25,6 +32,7 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
         PREFS[index]=f"{index+1}. {item}"
     LENGTH=len(PREFS)
 
+    global SIGNATURE_BLOCK_START
     SIGNATURE_BLOCK_START = 0
 
     OFFICE_SYMBOL = (74, 670)
@@ -111,9 +119,11 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
     # read your existing PDF
     existing_pdf = PdfFileReader(open(TEMPLATE, "rb"))
     output = PdfFileWriter()
-    # add the "watermark" (which is the new pdf) on the existing page
+    #read from the template file, get the first page
     page = existing_pdf.getPage(0)
+    #use pypdf to merge the first page of the template with the canvas input
     page.mergePage(new_pdf.getPage(0))
+    #finally, output is an empty pdf. append >>
     output.addPage(page)
     # if needed extra page, need to add
     if LENGTH > 20:
@@ -122,21 +132,27 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
         page = existing_pdf.getPage(1)
         page.mergePage(second_page.getPage(0))
         output.addPage(page)
-    # finally, write "output" to a real file
-    # outputStream = open(OUTFILE, "wb")
-    # output.write(outputStream)
-    # outputStream.close()
+
+    #write to bytes object
     outputStream=io.BytesIO()
     output.write(outputStream)
     outputStream.seek(0)
-    return outputStream
 
-    # # make signature block
-    # if LENGTH > 20:
-    #     subprocess.run(['pyhanko', 'sign', 'addfields', '--field',
-    #                     f"2/310,{SIGNATURE_BLOCK_START},450,{SIGNATURE_BLOCK_START - 35}/signature", 'destination.pdf',
-    #                     'signme.pdf'])
-    # else:
-    #     subprocess.run(['pyhanko', 'sign', 'addfields', '--field',
-    #                     f"1/310,{SIGNATURE_BLOCK_START},450,{SIGNATURE_BLOCK_START - 35}/signature", 'destination.pdf',
-    #                     'signme.pdf'])
+    #taken from pyhanko cli.py
+    #define field
+    field=None
+    if LENGTH > 20:
+        field=f"2/310,{SIGNATURE_BLOCK_START},450,{SIGNATURE_BLOCK_START - 35}/signature"
+    else:
+        field=f"1/310,{SIGNATURE_BLOCK_START},450,{SIGNATURE_BLOCK_START - 35}/signature"
+
+    #use pyhanko to write field to pdf bytes obj
+    with pyhanko_exception_manager():
+        writer = IncrementalPdfFileWriter(outputStream)
+        name, spec = parse_field_location_spec(field)
+        assert spec is not None
+        fields.append_signature_field(writer, spec)
+        #write_in_place writes to stream it was initialized with
+        writer.write_in_place()
+    outputStream.seek(0)
+    return outputStream
