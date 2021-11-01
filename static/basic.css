@@ -1,0 +1,12 @@
+html,body {
+    height: 100%;
+}
+#branchListContainer {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 90%;
+
+}
+.branchItem {
+    cursor: pointer;
+}

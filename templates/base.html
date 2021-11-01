@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="../static/scripts/Sortable/Sortable.js"></script>
+    <script src="../static/scripts/branch.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/basic.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
@@ -13,45 +15,85 @@
 
 </head>
 <body>
-<div class="container">
-    <div class="row align-items-center">
-        <div class="col-4">
-
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-4 align-items-start">
+        <div class="card">
+        <img class="card-img-top" src="../static/images/helicopyet.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h1>Branching Generator</h1>
+            <p>Fill out the admin data below, then arrange the branches to the right to your liking.</p>
+            <form>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">First name</label>
+                    <input  class="form-control" id="txtFirst"
+                           placeholder="Aubrey">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Last name</label>
+                    <input  class="form-control" id="txtLast"
+                           placeholder="Smith">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Email</label>
+                    <input type="email" class="form-control" id="txtEmail"
+                           placeholder="name@westpoint.edu">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Company</label>
+                    <select class="form-control" id="lstCompany">
+                        {% for company in companies %}
+                        <option>{{ company }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
         </div>
-        <div class="col-6">
-            <div id="branchList" class="list-group">
-                {% for id, def in branches.items() %}
-                    <div id="select{{ id }}" data-id="{{ id }}" class="list-group-item">
-                        <div class="row">
-                            <div class="col-7">
-                                <p class="branchTitle">{{ def['name'] }}</p>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                           id="flexSwitch{{ id }}">
-                                    <label class="form-check-label" for="flexSwitch{{ id }}">BRADSO </label>
+        </div>
+        </div>
+        <div class="col-6" id="branchListContainer">
+            <div>
+                <div id="branchList" class="list-group">
+                    {% for id, def in branches.items() %}
+                        <div id="select{{ id }}" data-id="{{ id }}" class="branchItem list-group-item">
+                            <div class="row">
+                                <div class="col-7">
+                                    <p class="branchTitle">{{ def['name'] }}</p>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                               id="flexSwitch{{ id }}" onclick="addBRADSO('{{ id }}')">
+                                        <label class="form-check-label" for="flexSwitch{{ id }}">BRADSO </label>
+                                    </div>
+                                </div>
+                                <div class="col-5 branchDetail">
+                                    {% if def['detail']|length > 0 %}
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    id="dropdownBranchdetail{{ id }}" data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                Branch Detail
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownBranchdetail{{ id }}">
+                                                {% for item in def['detail'] %}
+                                                    <li id="branchDetail{{ id }}{{ item }}"
+                                                        onclick="makeBranchDetail(this,'{{ id }}','{{ item }}')"><a
+                                                            class="dropdown-item" href="#">{{ item }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="col-5 branchDetail">
-                                {% if def['detail']|length > 0 %}
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownBranchdetail{{ id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Branch Detail
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownBranchdetail{{ id }}">
-                                        {% for item in def['detail'] %}
-                                        <li onclick="makeBranchDetail(this,'{{ id }}','{{ item }}')"><a class="dropdown-item" href="#">{{ item }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
 
-                    </div>
-                {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
+    <div class="col-2 p-4">
+        <button type="button" class="btn mb-2 btn-secondary w-100 btn-lg">Reset</button>
+        <button type="button" class="btn mb-2 btn-primary w-100 btn-lg">Download</button>
+    </div>
     </div>
 </div>
 
@@ -61,25 +103,6 @@
     var branchselection = Sortable.create(branchList, { /* options */});
 </script>
 
-<script>
-    function makeBranchDetail(element,baseBranch,branchdetail) {
-        element.parentElement.parentElement.innerHTML=branchdetail;
-        let targetBranch=document.getElementById("select"+baseBranch);
-        let branchList=document.getElementById("branchList");
-        //create node
-        let newNode=targetBranch.cloneNode(true);
-        newNode.id='select'+baseBranch+branchdetail;
-        newNode.classList.add('bg-secondary');
-
-        newNode.querySelector('.col-7').innerHTML=
-            "<p class='text-white'>"+baseBranch+" w/ branch detail " + branchdetail+"</p>";
-        newNode.querySelector('.col-5').classList.add("align-items-end")
-        newNode.querySelector('.col-5').innerHTML=
-            '<button type="button" class="btn-close" aria-label="Close"></button>';
-        branchList.insertBefore(newNode,targetBranch);
-    }
-
-</script>
 
 </body>
 </html>
