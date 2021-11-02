@@ -99,7 +99,10 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
                 page2.drawString(ROOT[0], PAGE2_Y_START - (i - PAGE2_LIMIT) * Y_INTER, PREFS[i])
 
         # write footer
-        writeFooter(page2, (PAGE2_Y_START - ((LENGTH - PAGE2_LIMIT) * Y_INTER) - 5))
+        page2_y=PAGE2_Y_START
+        if LENGTH>PAGE2_LIMIT:
+            page2_y-=(((LENGTH - PAGE2_LIMIT) * Y_INTER) + 5)
+        writeFooter(page2, page2_y)
 
         # save
         page1.save()

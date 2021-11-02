@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import Flask, render_template, request, Response
 from werkzeug.wsgi import FileWrapper
@@ -9,7 +10,7 @@ app = Flask(__name__)
 
 branches={}
 
-with open('/home/branching/branches.json') as reader:
+with open(os.path.join(os.path.dirname(__file__),'branches.json')) as reader:
     branches=json.load(reader)
 
 
