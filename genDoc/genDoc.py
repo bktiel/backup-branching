@@ -43,7 +43,7 @@ def generateMFR(COMPANY,REG,FIRST,LAST,EMAIL,PREFS):
 
     def writeFooter(page, ystart):
         global SIGNATURE_BLOCK_START
-        contentString = f"3.   The point of contact for this memorandum is CDT {LAST.capitalize()}, {FIRST.capitalize()} at"
+        contentString = f"3. The point of contact for this memorandum is CDT {LAST.capitalize()}, {FIRST.capitalize()} at"
         Y_OFFSET = ystart
         X_OFFSET = OFFICE_SYMBOL[0]
         page.drawString(X_OFFSET, Y_OFFSET, contentString)
